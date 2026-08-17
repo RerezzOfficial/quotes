@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quote Image Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #0d0d0d;
+    color: #f2f2f2;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 60px;
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin: 0 0 24px;
+    color: #ffffff;
+  }
+  .layout {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .panel {
+    background: #171717;
+    border: 1px solid #2a2a2a;
+    border-radius: 14px;
+    padding: 20px;
+    width: 320px;
+    flex-shrink: 0;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #9a9a9a;
+    margin: 16px 0 6px;
+  }
+  label:first-child { margin-top: 0; }
+  textarea, input[type="text"], select {
+    width: 100%;
+    background: #0d0d0d;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #f2f2f2;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    outline: none;
+  }
+  textarea:focus, input[type="text"]:focus, select:focus { border-color: #777; }
+  textarea { min-height: 120px; line-height: 1.5; }
+  select { cursor: pointer; }
+  input[type="range"] { width: 100%; margin-top: 6px; }
+  .rangeval {
+    font-size: 11px;
+    color: #777;
+    float: right;
+  }
+  button {
+    width: 100%;
+    margin-top: 22px;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: #f2f2f2;
+    color: #111;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+  button:hover { opacity: 0.85; }
+  button.secondary {
+    background: transparent;
+    color: #f2f2f2;
+    border: 1px solid #444;
+    margin-top: 10px;
+  }
+  .canvas-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  #quoteCanvas {
+    width: 100%;
+    max-width: 460px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    display: block;
+    background: #000;
+  }
+  .hint {
+    font-size: 12px;
+    color: #6f6f6f;
+    text-align: center;
+    max-width: 460px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<h1>Quote Image Generator</h1>
+
+<div class="layout">
+
+  <div class="panel">
+    <label for="quoteText">Kata-kata / Quotes</label>
+    <textarea id="quoteText">Jangan bandingkan hidupmu dengan orang lain. Tidak semua bunga tumbuh di musim yang sama. Percayalah, waktumu akan tiba dengan cara yang paling indah.</textarea>
+
+    <label for="nameTag">Name Tag</label>
+    <input type="text" id="nameTag" value="#Quotes">
+
+    <label for="bgChoice">Background</label>
+    <select id="bgChoice">
+      <option value="black" selected>Hitam</option>
+      <option value="white">Putih</option>
+    </select>
+
+    <label for="fontSize">Ukuran Font <span class="rangeval" id="fontSizeVal">54</span></label>
+    <input type="range" id="fontSize" min="28" max="80" value="54">
+
+    <button id="generateBtn">Generate Gambar</button>
+    <button id="downloadBtn" class="secondary">Unduh PNG</button>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="quoteCanvas" width="1080" height="1080"></canvas>
+    <div class="hint">Isi kata-kata dan name tag di panel kiri, pilih background, lalu klik Generate. Setelah hasilnya sesuai, klik Unduh PNG.</div>
+  </div>
+
+</div>
+
+<script>
+const LOGO_URL = "https://files.catbox.moe/2e5gew.png";
+const LOGO_SIZE = 190;
+const BOTTOM_MARGIN = 30;
+
+const canvas = document.getElementById("quoteCanvas");
+const ctx = canvas.getContext("2d");
+const W = canvas.width;
+const H = canvas.height;
+
+const quoteTextEl = document.getElementById("quoteText");
+const nameTagEl = document.getElementById("nameTag");
+const bgChoiceEl = document.getElementById("bgChoice");
+const fontSizeEl = document.getElementById("fontSize");
+const fontSizeVal = document.getElementById("fontSizeVal");
+const generateBtn = document.getElementById("generateBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+
+let logoImg = null;
+let logoReady = false;
+
+function loadLogo() {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      logoImg = img;
+      logoReady = true;
+      resolve();
+    };
+    img.onerror = () => {
+      logoImg = null;
+      logoReady = false;
+      resolve();
+    };
+    img.src = LOGO_URL;
+  });
+}
+
+function wrapText(text, maxWidth) {
+  const paragraphs = text.split(/\n+/);
+  const lines = [];
+  paragraphs.forEach((para) => {
+    const words = para.split(" ").filter(Boolean);
+    let current = "";
+    words.forEach((word) => {
+      const test = current ? current + " " + word : word;
+      if (ctx.measureText(test).width > maxWidth && current) {
+        lines.push(current);
+        current = word;
+      } else {
+        current = test;
+      }
+    });
+    if (current) lines.push(current);
+  });
+  return lines;
+}
+
+function draw() {
+  const isBlack = bgChoiceEl.value === "black";
+  const bg = isBlack ? "#000000" : "#ffffff";
+  const textColor = isBlack ? "#ffffff" : "#000000";
+  const fontSize = parseInt(fontSizeEl.value, 10);
+
+  const rawQuote = quoteTextEl.value.trim() || "...";
+  const nameTag = nameTagEl.value.trim() || "#Quotes";
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  const tagFontSize = Math.max(22, Math.round(fontSize * 0.42));
+  const gapLogoTag = 18;
+
+  const bottomBlockHeight = LOGO_SIZE + gapLogoTag + tagFontSize;
+  const bottomBlockTop = H - BOTTOM_MARGIN - bottomBlockHeight;
+
+  if (logoReady && logoImg) {
+    ctx.save();
+    ctx.globalAlpha = 1;
+    ctx.drawImage(logoImg, W / 2 - LOGO_SIZE / 2, bottomBlockTop, LOGO_SIZE, LOGO_SIZE);
+    ctx.restore();
+  }
+
+  ctx.textAlign = "center";
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = textColor;
+  ctx.font = `500 ${tagFontSize}px "Playfair Display", Georgia, serif`;
+  const nameTagBaseline = bottomBlockTop + LOGO_SIZE + gapLogoTag + tagFontSize * 0.78;
+  ctx.fillText(nameTag, W / 2, nameTagBaseline);
+
+  const sidePadding = 130;
+  const maxTextWidth = W - sidePadding * 2;
+  const lineHeight = fontSize * 1.45;
+
+  ctx.font = `500 ${fontSize}px "Playfair Display", Georgia, serif`;
+  const quoteWithMarks = "\u201C" + rawQuote + "\u201D";
+  const lines = wrapText(quoteWithMarks, maxTextWidth);
+
+  const topPadding = 110;
+  const quoteAreaBottom = bottomBlockTop - 50;
+  const quoteAreaHeight = quoteAreaBottom - topPadding;
+  const blockHeight = lines.length * lineHeight;
+
+  let y = topPadding + (quoteAreaHeight - blockHeight) / 2 + fontSize * 0.72;
+
+  lines.forEach((line) => {
+    ctx.fillText(line, W / 2, y);
+    y += lineHeight;
+  });
+}
+
+async function ensureFontsAndDraw() {
+  try {
+    await document.fonts.load(`500 60px "Playfair Display"`);
+    await document.fonts.load(`600 60px "Playfair Display"`);
+  } catch (e) {}
+  draw();
+}
+
+fontSizeEl.addEventListener("input", () => {
+  fontSizeVal.textContent = fontSizeEl.value;
+});
+
+generateBtn.addEventListener("click", ensureFontsAndDraw);
+
+downloadBtn.addEventListener("click", () => {
+  try {
+    const link = document.createElement("a");
+    link.download = "quote.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  } catch (e) {
+    alert("Gagal mengunduh gambar. Coba klik Generate ulang lalu unduh kembali.");
+  }
+});
+
+(async function init() {
+  await loadLogo();
+  await ensureFontsAndDraw();
+})();
+</script>
+
+</body>
+</html>
