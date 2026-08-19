@@ -3,153 +3,366 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quote Image Generator</title>
+<title>Quote Image Generator — Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg-0: #0a0a0b;
+    --bg-1: #111114;
+    --bg-2: #16161a;
+    --bg-3: #1c1c21;
+    --border: #2a2a31;
+    --border-soft: #222228;
+    --text: #f4f4f5;
+    --text-dim: #a1a1aa;
+    --text-muted: #71717a;
+    --accent: #d4a574;
+    --accent-soft: rgba(212, 165, 116, 0.12);
+    --accent-line: rgba(212, 165, 116, 0.35);
+    --tiktok: #fe2c55;
+    --tiktok-cyan: #25f4ee;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --shadow-lg: 0 24px 60px -12px rgba(0,0,0,0.7);
+    --shadow-md: 0 8px 24px -6px rgba(0,0,0,0.5);
+  }
+
   * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
   body {
-    margin: 0;
     min-height: 100vh;
-    background: #0d0d0d;
-    color: #f2f2f2;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 32px 16px 60px;
-  }
-  h1 {
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    margin: 0 0 24px;
-    color: #ffffff;
-  }
-  .layout {
-    width: 100%;
-    max-width: 1000px;
-    display: flex;
-    gap: 28px;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
-  }
-  .panel {
-    background: #171717;
-    border: 1px solid #2a2a2a;
-    border-radius: 14px;
-    padding: 20px;
-    width: 320px;
-    flex-shrink: 0;
-  }
-  label {
-    display: block;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: #9a9a9a;
-    margin: 16px 0 6px;
-  }
-  label:first-child { margin-top: 0; }
-  textarea, input[type="text"], select {
-    width: 100%;
-    background: #0d0d0d;
-    border: 1px solid #333;
-    border-radius: 8px;
-    color: #f2f2f2;
-    padding: 10px 12px;
-    font-size: 14px;
-    font-family: inherit;
-    resize: vertical;
-    outline: none;
-  }
-  textarea:focus, input[type="text"]:focus, select:focus { border-color: #777; }
-  textarea { min-height: 120px; line-height: 1.5; }
-  select { cursor: pointer; }
-  input[type="range"] { width: 100%; margin-top: 6px; }
-  .rangeval {
-    font-size: 11px;
-    color: #777;
-    float: right;
-  }
-  button {
-    width: 100%;
-    margin-top: 22px;
-    padding: 13px;
-    border: none;
-    border-radius: 8px;
-    background: #f2f2f2;
-    color: #111;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    cursor: pointer;
-    transition: opacity 0.15s ease;
-  }
-  button:hover { opacity: 0.85; }
-  button.secondary {
-    background: transparent;
-    color: #f2f2f2;
-    border: 1px solid #444;
-    margin-top: 10px;
-  }
-  .canvas-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-  }
-  #quoteCanvas {
-    width: 100%;
-    max-width: 460px;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-    display: block;
-    background: #000;
-  }
-  .hint {
-    font-size: 12px;
-    color: #6f6f6f;
-    text-align: center;
-    max-width: 460px;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(212,165,116,0.06), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(120,119,198,0.05), transparent 60%),
+      var(--bg-0);
+    color: var(--text);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    padding: 40px 20px 80px;
     line-height: 1.5;
   }
+
+  .container { max-width: 1180px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 36px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--accent);
+    background: var(--accent-soft); border: 1px solid var(--accent-line);
+    padding: 6px 14px; border-radius: 100px; margin-bottom: 16px;
+  }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  
+  h1 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(28px, 4vw, 42px); font-weight: 600; margin: 0 0 10px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(180deg, #fff 0%, #b8b8c0 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .subtitle { color: var(--text-dim); font-size: 14px; margin: 0; }
+
+  .layout { display: grid; grid-template-columns: 360px 1fr; gap: 28px; align-items: start; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow-md);
+  }
+  .panel-header {
+    padding: 18px 22px; border-bottom: 1px solid var(--border-soft);
+    display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.015);
+  }
+  .panel-header svg { width: 16px; height: 16px; color: var(--accent); }
+  .panel-header h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: var(--text); }
+  .panel-body { padding: 22px; }
+
+  .field { margin-bottom: 20px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-label {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-dim); margin-bottom: 8px;
+  }
+  .field-value {
+    font-family: "Inter", monospace; font-size: 12px; color: var(--accent);
+    background: var(--accent-soft); padding: 2px 8px; border-radius: 6px; font-weight: 600;
+  }
+  textarea, input[type="text"], select {
+    width: 100%; background: var(--bg-0); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text); padding: 11px 13px;
+    font-size: 13.5px; font-family: inherit; outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  textarea:focus, input[type="text"]:focus, select:focus {
+    border-color: var(--accent-line); box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  textarea { min-height: 110px; resize: vertical; line-height: 1.55; }
+  select {
+    cursor: pointer; appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+  }
+
+  .bg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .bg-swatch {
+    aspect-ratio: 1; border-radius: var(--radius-sm); cursor: pointer;
+    border: 2px solid transparent; position: relative; overflow: hidden;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .bg-swatch:hover { transform: translateY(-2px); }
+  .bg-swatch.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .bg-swatch span {
+    position: absolute; bottom: 6px; left: 0; right: 0; text-align: center;
+    font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 4px;
+    background: var(--bg-3); border-radius: 100px; outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 16px; height: 16px;
+    border-radius: 50%; background: var(--accent); cursor: pointer;
+    border: 3px solid var(--bg-1); box-shadow: 0 0 0 1px var(--accent); transition: transform 0.15s;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px; height: 16px; border-radius: 50%; background: var(--accent);
+    cursor: pointer; border: 3px solid var(--bg-1); box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .toggle-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .toggle-btn {
+    background: var(--bg-0); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 10px; color: var(--text-dim); font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s; display: flex; align-items: center;
+    justify-content: center; gap: 6px;
+  }
+  .toggle-btn:hover { border-color: var(--text-muted); color: var(--text); }
+  .toggle-btn.active { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+
+  .divider { height: 1px; background: var(--border-soft); margin: 22px -22px; }
+
+  .btn-group {
+    display: grid; grid-template-columns: 1fr; gap: 8px;
+  }
+  .btn {
+    width: 100%; padding: 13px; border: none; border-radius: var(--radius-sm);
+    font-size: 13.5px; font-weight: 600; letter-spacing: 0.2px; cursor: pointer;
+    transition: all 0.18s ease; display: flex; align-items: center; justify-content: center;
+    gap: 8px; font-family: inherit;
+  }
+  .btn-primary {
+    background: linear-gradient(180deg, #e8b988 0%, var(--accent) 100%);
+    color: #1a1208; box-shadow: 0 4px 14px -2px rgba(212,165,116,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px -2px rgba(212,165,116,0.5); }
+  .btn-primary:active { transform: translateY(0); }
+  
+  .btn-secondary {
+    background: transparent; color: var(--text); border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--text-muted); background: rgba(255,255,255,0.02); }
+
+  .btn-tiktok {
+    background: linear-gradient(135deg, #000000 0%, #111111 100%);
+    color: #fff; border: 1px solid #333;
+    box-shadow: 0 4px 14px -4px rgba(254, 44, 85, 0.4);
+    position: relative; overflow: hidden;
+  }
+  .btn-tiktok::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(254, 44, 85, 0.15) 0%, rgba(37, 244, 238, 0.15) 100%);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .btn-tiktok:hover::before { opacity: 1; }
+  .btn-tiktok:hover { transform: translateY(-1px); border-color: var(--tiktok); box-shadow: 0 6px 20px -4px rgba(254, 44, 85, 0.6); }
+  
+  .btn svg { width: 15px; height: 15px; z-index: 1; }
+  .btn span { z-index: 1; }
+
+  .canvas-area {
+    background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 28px; box-shadow: var(--shadow-md);
+  }
+  .canvas-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+  }
+  .canvas-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 100px; background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-soft); color: var(--text-dim);
+  }
+  .badge.live { background: rgba(74, 222, 128, 0.08); border-color: rgba(74, 222, 128, 0.25); color: #4ade80; }
+  .badge.live .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
+
+  .canvas-wrap { display: flex; justify-content: center; align-items: center; position: relative; }
+  .canvas-frame { position: relative; max-width: 520px; width: 100%; }
+  #quoteCanvas {
+    width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow-lg);
+    display: block; background: #000;
+  }
+  .canvas-frame::before {
+    content: ""; position: absolute; inset: -1px; border-radius: 13px; padding: 1px;
+    background: linear-gradient(135deg, var(--accent-line) 0%, transparent 40%, transparent 60%, var(--accent-line) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; opacity: 0.5;
+  }
+
+  .hint {
+    margin-top: 18px; padding: 12px 16px; background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border-soft); border-radius: var(--radius-sm);
+    font-size: 12px; color: var(--text-dim); display: flex; gap: 10px;
+    align-items: flex-start; line-height: 1.6;
+  }
+  .hint svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--bg-3); border: 1px solid var(--border); color: var(--text);
+    padding: 12px 20px; border-radius: 100px; font-size: 13px; font-weight: 500;
+    box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 10px;
+    opacity: 0; transition: all 0.3s ease; z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast svg { width: 16px; height: 16px; color: #4ade80; }
+
+  footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-size: 12px; }
 </style>
 </head>
 <body>
 
-<h1>Quote Image Generator</h1>
+<div class="container">
 
-<div class="layout">
+  <header>
+    <span class="eyebrow"><span class="dot"></span>Quote Studio</span>
+    <h1>Quote Image Generator</h1>
+    <p class="subtitle">Buat kutipan estetik berkualitas tinggi untuk media sosial Anda</p>
+  </header>
 
-  <div class="panel">
-    <label for="quoteText">Kata-kata / Quotes</label>
-    <textarea id="quoteText">Jangan bandingkan hidupmu dengan orang lain. Tidak semua bunga tumbuh di musim yang sama. Percayalah, waktumu akan tiba dengan cara yang paling indah.</textarea>
+  <div class="layout">
 
-    <label for="nameTag">Name Tag</label>
-    <input type="text" id="nameTag" value="#Quotes">
+    <!-- Control Panel -->
+    <aside class="panel">
+      <div class="panel-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <h2>Kustomisasi</h2>
+      </div>
+      <div class="panel-body">
 
-    <label for="bgChoice">Background</label>
-    <select id="bgChoice">
-      <option value="black" selected>Hitam</option>
-      <option value="white">Putih</option>
-    </select>
+        <div class="field">
+          <div class="field-label"><span>Kutipan</span></div>
+          <textarea id="quoteText" placeholder="Tulis kutipan di sini...">Jangan bandingkan hidupmu dengan orang lain. Tidak semua bunga tumbuh di musim yang sama. Percayalah, waktumu akan tiba dengan cara yang paling indah.</textarea>
+        </div>
 
-    <label for="fontSize">Ukuran Font <span class="rangeval" id="fontSizeVal">54</span></label>
-    <input type="range" id="fontSize" min="28" max="80" value="54">
+        <div class="field">
+          <div class="field-label"><span>Name Tag</span></div>
+          <input type="text" id="nameTag" value="#Quotes" placeholder="#Quotes">
+        </div>
 
-    <button id="generateBtn">Generate Gambar</button>
-    <button id="downloadBtn" class="secondary">Unduh PNG</button>
+        <div class="field">
+          <div class="field-label"><span>Latar Belakang</span></div>
+          <div class="bg-grid" id="bgGrid">
+            <div class="bg-swatch active" data-bg="black" style="background:#000;color:#fff;"><span>Hitam</span></div>
+            <div class="bg-swatch" data-bg="white" style="background:#fff;color:#000;"><span>Putih</span></div>
+            <div class="bg-swatch" data-bg="dark-gradient" style="background:linear-gradient(135deg,#0a0a0a,#1a1a1a);color:#fff;"><span>Dark</span></div>
+            <div class="bg-swatch" data-bg="light-gradient" style="background:linear-gradient(135deg,#f5f5f0,#ffffff);color:#000;"><span>Cream</span></div>
+            <div class="bg-swatch" data-bg="midnight" style="background:linear-gradient(135deg,#0a0e27,#1a1f3a);color:#fff;"><span>Midnight</span></div>
+            <div class="bg-swatch" data-bg="warm" style="background:linear-gradient(135deg,#1a1410,#2a1f18);color:#fff;"><span>Warm</span></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span>Font Family</span></div>
+          <select id="fontFamily">
+            <option value="Playfair Display" selected>Playfair Display</option>
+            <option value="Cormorant Garamond">Cormorant Garamond</option>
+            <option value="Lora">Lora</option>
+            <option value="Georgia">Georgia</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span>Gaya Teks</span></div>
+          <div class="toggle-row">
+            <button class="toggle-btn active" id="italicBtn" data-toggle="italic"><em>Italic</em></button>
+            <button class="toggle-btn active" id="quoteMarkBtn" data-toggle="marks">" Tanda Petik</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">
+            <span>Ukuran Font</span>
+            <span class="field-value" id="fontSizeVal">54px</span>
+          </div>
+          <input type="range" id="fontSize" min="32" max="80" value="54">
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" id="generateBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            <span>Generate Ulang</span>
+          </button>
+          
+          <button class="btn btn-secondary" id="downloadBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Unduh PNG (1080×1080)</span>
+          </button>
+
+          <button class="btn btn-tiktok" id="shareTiktokBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.1z"/></svg>
+            <span>Bagikan ke TikTok / Lainnya</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Canvas Preview -->
+    <main class="canvas-area">
+      <div class="canvas-toolbar">
+        <div class="canvas-meta">
+          <span class="badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> 1080 × 1080</span>
+          <span class="badge">PNG</span>
+        </div>
+        <span class="badge live"><span class="dot"></span>Live Preview</span>
+      </div>
+
+      <div class="canvas-wrap">
+        <div class="canvas-frame">
+          <canvas id="quoteCanvas" width="1080" height="1080"></canvas>
+        </div>
+      </div>
+
+      <div class="hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span>Pratinjau diperbarui secara langsung saat Anda mengetik. Klik tombol <strong>Bagikan ke TikTok</strong> untuk membagikan langsung gambar ke aplikasi favorit Anda tanpa perlu unduh manual.</span>
+      </div>
+    </main>
+
   </div>
 
-  <div class="canvas-wrap">
-    <canvas id="quoteCanvas" width="1080" height="1080"></canvas>
-    <div class="hint">Isi kata-kata dan name tag di panel kiri, pilih background, lalu klik Generate. Setelah hasilnya sesuai, klik Unduh PNG.</div>
-  </div>
+  <footer>
+    Dibuat dengan presisi untuk kutipan yang bermakna · 1080×1080 px
+  </footer>
 
+</div>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg">Gambar berhasil diunduh</span>
 </div>
 
 <script>
@@ -164,29 +377,40 @@ const H = canvas.height;
 
 const quoteTextEl = document.getElementById("quoteText");
 const nameTagEl = document.getElementById("nameTag");
-const bgChoiceEl = document.getElementById("bgChoice");
 const fontSizeEl = document.getElementById("fontSize");
 const fontSizeVal = document.getElementById("fontSizeVal");
+const fontFamilyEl = document.getElementById("fontFamily");
 const generateBtn = document.getElementById("generateBtn");
 const downloadBtn = document.getElementById("downloadBtn");
+const shareTiktokBtn = document.getElementById("shareTiktokBtn");
+const bgGrid = document.getElementById("bgGrid");
+const italicBtn = document.getElementById("italicBtn");
+const quoteMarkBtn = document.getElementById("quoteMarkBtn");
+const toast = document.getElementById("toast");
+const toastMsg = document.getElementById("toastMsg");
 
 let logoImg = null;
 let logoReady = false;
+let currentBg = "black";
+let isItalic = true;
+let useQuoteMarks = true;
+let drawTimer = null;
+
+const bgPresets = {
+  "black": { type: "solid", color: "#000000", textColor: "#ffffff" },
+  "white": { type: "solid", color: "#ffffff", textColor: "#000000" },
+  "dark-gradient": { type: "gradient", colors: ["#0a0a0a", "#1f1f1f"], textColor: "#ffffff" },
+  "light-gradient": { type: "gradient", colors: ["#f5f5f0", "#ffffff"], textColor: "#1a1a1a" },
+  "midnight": { type: "gradient", colors: ["#0a0e27", "#1a1f3a"], textColor: "#ffffff" },
+  "warm": { type: "gradient", colors: ["#1a1410", "#2d2018"], textColor: "#f5e6d3" }
+};
 
 function loadLogo() {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
-    img.onload = () => {
-      logoImg = img;
-      logoReady = true;
-      resolve();
-    };
-    img.onerror = () => {
-      logoImg = null;
-      logoReady = false;
-      resolve();
-    };
+    img.onload = () => { logoImg = img; logoReady = true; resolve(); };
+    img.onerror = () => { logoImg = null; logoReady = false; resolve(); };
     img.src = LOGO_URL;
   });
 }
@@ -207,26 +431,39 @@ function wrapText(text, maxWidth) {
       }
     });
     if (current) lines.push(current);
+    if (para === "") lines.push("");
   });
   return lines;
 }
 
+function drawBackground(preset) {
+  if (preset.type === "solid") {
+    ctx.fillStyle = preset.color;
+    ctx.fillRect(0, 0, W, H);
+  } else if (preset.type === "gradient") {
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, preset.colors[0]);
+    grad.addColorStop(1, preset.colors[1]);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+  }
+}
+
 function draw() {
-  const isBlack = bgChoiceEl.value === "black";
-  const bg = isBlack ? "#000000" : "#ffffff";
-  const textColor = isBlack ? "#ffffff" : "#000000";
+  const preset = bgPresets[currentBg] || bgPresets["black"];
+  const textColor = preset.textColor;
   const fontSize = parseInt(fontSizeEl.value, 10);
+  const fontFamily = fontFamilyEl.value;
+  const fontStyle = isItalic ? "italic " : "";
 
   const rawQuote = quoteTextEl.value.trim() || "...";
   const nameTag = nameTagEl.value.trim() || "#Quotes";
 
   ctx.clearRect(0, 0, W, H);
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, W, H);
+  drawBackground(preset);
 
   const tagFontSize = Math.max(22, Math.round(fontSize * 0.42));
   const gapLogoTag = 18;
-
   const bottomBlockHeight = LOGO_SIZE + gapLogoTag + tagFontSize;
   const bottomBlockTop = H - BOTTOM_MARGIN - bottomBlockHeight;
 
@@ -240,7 +477,7 @@ function draw() {
   ctx.textAlign = "center";
   ctx.textBaseline = "alphabetic";
   ctx.fillStyle = textColor;
-  ctx.font = `500 ${tagFontSize}px "Playfair Display", Georgia, serif`;
+  ctx.font = `500 ${tagFontSize}px "${fontFamily}", Georgia, serif`;
   const nameTagBaseline = bottomBlockTop + LOGO_SIZE + gapLogoTag + tagFontSize * 0.78;
   ctx.fillText(nameTag, W / 2, nameTagBaseline);
 
@@ -248,9 +485,9 @@ function draw() {
   const maxTextWidth = W - sidePadding * 2;
   const lineHeight = fontSize * 1.45;
 
-  ctx.font = `500 ${fontSize}px "Playfair Display", Georgia, serif`;
-  const quoteWithMarks = "\u201C" + rawQuote + "\u201D";
-  const lines = wrapText(quoteWithMarks, maxTextWidth);
+  ctx.font = `${fontStyle}500 ${fontSize}px "${fontFamily}", Georgia, serif`;
+  const quoteContent = useQuoteMarks ? "\u201C" + rawQuote + "\u201D" : rawQuote;
+  const lines = wrapText(quoteContent, maxTextWidth);
 
   const topPadding = 110;
   const quoteAreaBottom = bottomBlockTop - 50;
@@ -266,27 +503,116 @@ function draw() {
 }
 
 async function ensureFontsAndDraw() {
-  try {
-    await document.fonts.load(`500 60px "Playfair Display"`);
-    await document.fonts.load(`600 60px "Playfair Display"`);
-  } catch (e) {}
+  const fonts = [
+    `500 60px "Playfair Display"`,
+    `italic 500 60px "Playfair Display"`,
+    `500 60px "Cormorant Garamond"`,
+    `italic 500 60px "Cormorant Garamond"`,
+    `500 60px "Lora"`,
+    `italic 500 60px "Lora"`
+  ];
+  try { await Promise.all(fonts.map(f => document.fonts.load(f))); } catch (e) {}
   draw();
 }
 
+function scheduleDraw() {
+  clearTimeout(drawTimer);
+  drawTimer = setTimeout(() => draw(), 80);
+}
+
+function showToast(msg) {
+  toastMsg.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2400);
+}
+
 fontSizeEl.addEventListener("input", () => {
-  fontSizeVal.textContent = fontSizeEl.value;
+  fontSizeVal.textContent = fontSizeEl.value + "px";
+  scheduleDraw();
 });
 
-generateBtn.addEventListener("click", ensureFontsAndDraw);
+quoteTextEl.addEventListener("input", scheduleDraw);
+nameTagEl.addEventListener("input", scheduleDraw);
+fontFamilyEl.addEventListener("change", scheduleDraw);
+
+bgGrid.addEventListener("click", (e) => {
+  const swatch = e.target.closest(".bg-swatch");
+  if (!swatch) return;
+  bgGrid.querySelectorAll(".bg-swatch").forEach(s => s.classList.remove("active"));
+  swatch.classList.add("active");
+  currentBg = swatch.dataset.bg;
+  scheduleDraw();
+});
+
+italicBtn.addEventListener("click", () => {
+  isItalic = !isItalic;
+  italicBtn.classList.toggle("active", isItalic);
+  scheduleDraw();
+});
+
+quoteMarkBtn.addEventListener("click", () => {
+  useQuoteMarks = !useQuoteMarks;
+  quoteMarkBtn.classList.toggle("active", useQuoteMarks);
+  scheduleDraw();
+});
+
+generateBtn.addEventListener("click", () => {
+  ensureFontsAndDraw();
+  showToast("Gambar berhasil dibuat ulang");
+});
 
 downloadBtn.addEventListener("click", () => {
   try {
     const link = document.createElement("a");
-    link.download = "quote.png";
+    const name = (nameTagEl.value || "quote").replace(/[^a-z0-9]/gi, "_").toLowerCase() || "quote";
+    link.download = `${name}.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
+    showToast("Gambar berhasil diunduh");
   } catch (e) {
-    alert("Gagal mengunduh gambar. Coba klik Generate ulang lalu unduh kembali.");
+    showToast("Gagal mengunduh. Coba generate ulang.");
+  }
+});
+
+// --- FITUR BAGIKAN KE TIKTOK / SOSMED LAINNYA ---
+shareTiktokBtn.addEventListener("click", async () => {
+  try {
+    // Konversi canvas menjadi Blob file
+    canvas.toBlob(async (blob) => {
+      if (!blob) {
+        showToast("Gagal memproses gambar.");
+        return;
+      }
+      
+      // Buat objek File dari blob
+      const file = new File([blob], "quote.png", { type: "image/png" });
+      const shareData = {
+        files: [file],
+        title: "Quote Image",
+        text: `${nameTagEl.value || "Quote"}\n\nDibuat dengan Quote Studio`
+      };
+
+      // Cek apakah browser mendukung Web Share API dengan File
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share(shareData);
+          showToast("Membuka menu berbagi...");
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            showToast("Gagal membuka menu berbagi.");
+          }
+        }
+      } else {
+        // Fallback jika dibuka di Desktop / browser yang tidak mendukung share file
+        showToast("Browser tidak mendukung share langsung. Mengunduh file...");
+        const link = document.createElement("a");
+        link.download = "quote.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }
+    }, 'image/png');
+  } catch (e) {
+    showToast("Terjadi kesalahan saat membagikan.");
   }
 });
 
